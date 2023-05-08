@@ -4,7 +4,6 @@ import CoreData
 class ItemManager {
     static let shared = ItemManager()
 
-    
     // Funcs
     
     func createNewItem(with title: String) {
@@ -32,7 +31,6 @@ class ItemManager {
         // If the fetch request fails, return an empty array of Items
         return fetchedItems ?? []
     }
-
     
     func fetchCompletedItems() -> [Item] {
         // Create the fetch request
@@ -76,5 +74,48 @@ class ItemManager {
             let items = indexPath.section == 0 ? incompleteItems : completedItems
             return items[indexPath.row]
         }
+    
+}
+
+class ToDoListManager {
+    static let shared = ToDoListManager()
+    
+    func createNewList(with title: String) {
+        let newList = ToDoList(context: PersistenceController.shared.viewContext)
+        
+        newList.title = title
+        // newList.items = to do list item count
+        
+        PersistenceController.shared.saveContext()
+    }
+    
+    func fetchLists() -> [ToDoList] {
+        let fetchRequest = ToDoList.fetchRequest()
+        
+        let sortDescriptor = NSSortDescriptor(key: "modifiedAt", ascending: true)
+        
+        fetchRequest.sortDescriptors = [sortDescriptor]
+        
+        let context = PersistenceController.shared.viewContext
+        
+        let fetchedLists = try? context.fetch(fetchRequest)
+        
+        return fetchedLists ?? []
+    }
+    
+    func deleteList(at indexPath: IndexPath) {
+        removeList(toDoList(at: indexPath))
+    }
+    
+    func removeList(_ list: ToDoList) {
+          let context = PersistenceController.shared.viewContext
+          context.delete(list)
+          PersistenceController.shared.saveContext()
+      }
+    
+    private func toDoList(at indexPath: IndexPath) -> ToDoList {
+        let lists = self.fetchLists()
+        return lists[indexPath.row]
+    }
 
 }

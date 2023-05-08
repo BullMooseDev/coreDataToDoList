@@ -166,6 +166,9 @@
                                         </label>
                                     </subviews>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <segue destination="BYZ-38-t0r" kind="show" id="Uv3-SL-k3i"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
